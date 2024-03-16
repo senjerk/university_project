@@ -1,0 +1,6 @@
+numpy
+yellowbrick
+pandas
+seaborn
+matplotlib
+pytest

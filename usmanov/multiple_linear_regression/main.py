@@ -1,6 +1,8 @@
 import os
 from library.mlr_methods import dispersion, y_model, sse, multiple_linear_regression
 from library.statistics import darbin_wattson
+from tasks.yellowbrick import pairwise_pearson_correlation
+from tasks.seaborn import plot_heatmap
 
 DATA_FILE_PATH = os.path.join('data.txt')
 
@@ -21,6 +23,8 @@ def split_data_from_file(file_path: str) -> tuple:
 # first string is Y list, second one are X lists
 if __name__ == "__main__":
     X, Y = split_data_from_file(DATA_FILE_PATH)
+    pairwise_pearson_correlation(X, Y)
+    plot_heatmap(X, Y)
     result_data = {}
     b = multiple_linear_regression(X, Y)
 

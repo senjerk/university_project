@@ -1,2 +1,3 @@
-.idea
-__pycache__
+usmanov/multiple_linear_regression/tests
+/.idea
+/usmanov/__init__.py
