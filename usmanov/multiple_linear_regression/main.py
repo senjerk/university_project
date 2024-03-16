@@ -1,41 +1,43 @@
-import numpy as np
+import os
+from library.mlr_methods import dispersion, y_model, sse, multiple_linear_regression
+from library.statistics import darbin_wattson
+
+DATA_FILE_PATH = os.path.join('data.txt')
 
 
-def multiple_linear_regression(X, Y):
-    X_matrix = np.array([list(X[key]) for key in X]).T
-    Y_matrix = np.array(list(Y.values())).reshape(-1, 1)
+def split_data_from_file(file_path: str) -> tuple:
+    with open(file_path, 'r') as file:
+        lines = file.readlines()
 
-    X_with_intercept = np.concatenate((np.ones((X_matrix.shape[0], 1)), X_matrix), axis=1)
+    y = list(map(float, lines[0].split()))
+    x = {}
+    for i in range(len(lines) - 1):
+        x.update({f"X{i + 1}": list(map(float, lines[i + 1].split()))})
 
-    coefficients = np.linalg.pinv(X_with_intercept) @ Y_matrix
-
-    b0 = coefficients[0][0]
-    b = coefficients[1:]
-
-    return b0, b
-
-
-def split_data(data):
-    lines = data.split('\n')
-    X1 = list(map(float, lines[0].split()))
-    X2 = list(map(float, lines[1].split()))
-    Y = list(map(float, lines[2].split()))
-
-    X = {"X1": X1,
-         "X2": X2}
-    Y = {"Y": Y}
-    return X, Y
+    y = {"Y": y}
+    return x, y
 
 
-data = """2400	2450	2450	2500	2500	2500	2700	2700	2700	2750	2775	2800	2800	2900	2900	3000	3075	3100	3150	3200	3200	3200	3225	3250	3250	3250	3500	3500	3500	3600	3900
-54.5	56	58.5	43	58	59	52.5	65.5	68	45	45.5	48	63	58.5	64.5	66	57	57.5	64	57	64	69	68	62	64.5	48	60	59	58	58	61
-60	61	65	30.5	63.5	65	44	52	54.5	30	26	23	54	36	53.5	57	33.5	34	44	33	39	53	38.5	39.5	36	8.5	30	29	26.5	24.5	26.5
-"""
+# first string is Y list, second one are X lists
+if __name__ == "__main__":
+    X, Y = split_data_from_file(DATA_FILE_PATH)
+    result_data = {}
+    b = multiple_linear_regression(X, Y)
 
-X, Y = split_data(data)
+    n = len(Y['Y'])
+    k = len(b) - 1
+    p = 1 + k
+    new_Y = y_model(X, Y, b)
+    sst = dispersion(Y) * (len(Y['Y']) - 1)
+    ssr = dispersion(new_Y) * (len(new_Y['Y']) - 1)
+    sse = sse(Y, new_Y)
+    df = n - p
+    r2 = ssr / sst
+    r2_adj = 1 - ((1 - r2) * (n - 1)) / (n - p)
+    dw = darbin_wattson(Y, new_Y)
 
-b0, b = multiple_linear_regression(X, Y)
-
-print("b2", b[1])
-print("b1", b[0])
-print("b0:", b0)
+    result_data.update(
+        {'b (b0->bN)': b, 'n': n, 'k': k, 'p': p, 'sst': sst, 'ssr': ssr, 'sse': sse, 'df': df, 'r2': r2,
+         'r2_adj': r2_adj, 'dw': dw})
+    for key, value in result_data.items():
+        print(f"{key}: {value}")
