@@ -27,18 +27,14 @@ def interpret_correlation_heatmap(correlation_matrix):
 
 
 def plot_heatmap(x: dict, y: dict) -> None:
-    # Преобразование словарей в списки
-    y_values = list(y.values())[0]  # Предполагаем, что в словаре `y` только одно значение
+    y_values = list(y.values())[0]
     x_values = list(x.values())
 
-    # Создание DataFrame
     df = pd.DataFrame(np.column_stack([y_values] + x_values),
                       columns=['Y'] + [f'X{i}' for i in range(1, len(x_values) + 1)])
 
-    # Вычисление корреляций
     correlations = df.corr()
 
-    # Построение тепловой карты
     plt.figure(figsize=(10, 8))
     sns.heatmap(correlations, annot=True, cmap='coolwarm', fmt=".2f")
     plt.title("Correlation Heatmap")
@@ -46,30 +42,3 @@ def plot_heatmap(x: dict, y: dict) -> None:
     plt.ylabel("Features")
     plt.show()
     interpret_correlation_heatmap(correlations)
-
-
-# def plot_heatmap(x: dict, y: dict) -> None:
-#     # Преобразование словарей в списки
-#     x_values = list(x.values())
-#     y_values = list(y.values())[0]  # Предполагаем, что в словаре `y` только одно значение
-#     feature_names = list(x.keys())
-#
-#     # Создание DataFrame
-#     num_features = len(x_values)
-#     X = np.column_stack(x_values)
-#     discrete = [False] * num_features
-#
-#     # Добавляем фиктивный дискретный признак для целевой переменной
-#     y_name = list(y.keys())[0]
-#     feature_names.append(y_name)
-#     X = np.column_stack((X, y_values))
-#     discrete.append(True)
-#
-#     # Построение матрицы корреляций
-#     corr_matrix = np.corrcoef(X, rowvar=False)
-#
-#     # Построение тепловой карты
-#     plt.figure(figsize=(10, 8))
-#     sns.heatmap(corr_matrix, annot=True, xticklabels=feature_names, yticklabels=feature_names, cmap="coolwarm")
-#     plt.title('Pairwise Pearson Correlation')
-#     plt.show()
