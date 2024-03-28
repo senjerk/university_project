@@ -32,6 +32,7 @@ if __name__ == "__main__":
 
     b = multiple_linear_regression(X, Y)
     print(y_model(X_stand, Y_stand, b)) # task №4
+    print(multiple_linear_regression(X_stand, Y_stand))
     result_data = {}
     b = multiple_linear_regression(X, Y)
 

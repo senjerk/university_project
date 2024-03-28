@@ -5,6 +5,9 @@ REQUIREMENTS=requirements.txt
 .PHONY: all clean test install run
 
 all:
+	echo "test"
+
+run:
 	$(PYTHON) -m main
 	find . -name '__pycache__' -exec rm -rf {} +
 
