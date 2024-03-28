@@ -27,7 +27,7 @@ if __name__ == "__main__":
     X, Y = split_data_from_file(DATA_FILE_PATH)
 
     pairwise_pearson_correlation(X, Y) # task №1
-    plot_heatmap(X, Y) # task №2
+    plot_heatmap(X) # task №2
 
     X_stand, Y_stand = standardize_data(X, Y) # task №3
 

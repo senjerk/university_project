@@ -26,12 +26,11 @@ def interpret_correlation_heatmap(correlation_matrix):
                 print(f"Нет корреляции между '{feature1}' и '{feature2}'")
 
 
-def plot_heatmap(x: dict, y: dict) -> None:
-    y_values = list(y.values())[0]
+def plot_heatmap(x: dict) -> None:
     x_values = list(x.values())
 
-    df = pd.DataFrame(np.column_stack([y_values] + x_values),
-                      columns=['Y'] + [f'X{i}' for i in range(1, len(x_values) + 1)])
+    df = pd.DataFrame(np.column_stack(x_values),
+                      columns=[f'X{i}' for i in range(1, len(x_values) + 1)])
 
     correlations = df.corr()
 
