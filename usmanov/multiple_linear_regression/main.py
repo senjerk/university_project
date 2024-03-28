@@ -1,9 +1,10 @@
 import os
 from library.mlr_methods import dispersion, y_model, sse, multiple_linear_regression
-from library.statistics import darbin_wattson
+from library.statistics import darbin_wattson, tstatistic
+from library.simple_methods import sqrt
 from tasks.yellowbrick import pairwise_pearson_correlation
 from tasks.seaborn import plot_heatmap
-from tasks.standart import standardize_data, linear_regression
+from tasks.standart import standardize_data
 
 DATA_FILE_PATH = os.path.join('data.txt')
 
@@ -36,20 +37,27 @@ if __name__ == "__main__":
     result_data = {}
     b = multiple_linear_regression(X, Y)
 
+    # test b0
+    if not tstatistic(X, Y):
+        b[0][0] = 0.0
+        print(y_model(X, Y, b))
+
     n = len(Y['Y'])
     k = len(b) - 1
     p = 1 + k
+    df = n - p - 1
     new_Y = y_model(X, Y, b)
     sst = dispersion(Y) * (len(Y['Y']) - 1)
     ssr = dispersion(new_Y) * (len(new_Y['Y']) - 1)
     sse = sse(Y, new_Y)
-    df = n - p
+    see = sqrt(sse/df)
     r2 = ssr / sst
     r2_adj = 1 - ((1 - r2) * (n - 1)) / (n - p)
     dw = darbin_wattson(Y, new_Y)
+    f_stat = (ssr/p)/(sse/df)
 
     result_data.update(
-        {'b (b0->bN)': b, 'n': n, 'k': k, 'p': p, 'sst': sst, 'ssr': ssr, 'sse': sse, 'df': df, 'r2': r2,
-         'r2_adj': r2_adj, 'dw': dw})
+        {'b (b0->bN)': b, 'n': n, 'k': k, 'p': p, 'sst': sst, 'ssr': ssr, 'sse': sse, 'see': see, 'df': df, 'r2': r2,
+         'r2_adj': r2_adj, 'dw': dw, 'f_stat': f_stat})
     for key, value in result_data.items():
         print(f"{key}: {value}") # task №5
