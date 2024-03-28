@@ -1,11 +1,9 @@
 # university_project
 
-there will be many of my homework from university\
-it wouldn't be smthing really complicate, but it would be my first steps inside the IT community
+there will be many of my homework from university
 
-so, how to use it?
-
-firstly u need to switch from main branch to dev, because main only for design purposes
-and second step is to be yourself :)
-
-have a nice day!
+* ## multiple_linear_regression project
+    ### installation
+    1. go to **multiple_linear_regression** folder
+    2. type in terminal (WSL, ubuntu or linux) -> make install
+    3. type in terminal -> make run
